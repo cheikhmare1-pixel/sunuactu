@@ -1,0 +1,30 @@
+[
+  {
+    "id": "vid-1",
+    "youtubeId": "5qap5aO4i9A",
+    "title": "Journal Télévisé de 20h - RTS 1 : Édition Spéciale Dépêches du jour",
+    "channelId": "rts_senegal",
+    "channelName": "RTS 1 - Chaîne Nationale",
+    "channelLogo": "https://www.google.com/s2/favicons?domain=rts.sn&sz=128",
+    "thumbnail": "https://i.ytimg.com/vi/5qap5aO4i9A/hqdefault.jpg",
+    "publishedAt": "2026-08-08T14:00:00.000Z",
+    "duration": "42:15",
+    "views": "145 200",
+    "category": "Officiel / RTS",
+    "description": "Journal télévisé de 20h avec les dernières décisions gouvernementales et grands reportages."
+  },
+  {
+    "id": "vid-2",
+    "youtubeId": "L_Lup_IJL6o",
+    "title": "Faram Facce TFM : Grand Débat Politique avec Pape Ngagne Ndiaye",
+    "channelId": "tfm_senegal",
+    "channelName": "TFM - Télé Futurs Médias",
+    "channelLogo": "https://www.google.com/s2/favicons?domain=tfm.sn&sz=128",
+    "thumbnail": "https://i.ytimg.com/vi/L_Lup_IJL6o/hqdefault.jpg",
+    "publishedAt": "2026-08-08T11:30:00.000Z",
+    "duration": "1:12:00",
+    "views": "238 500",
+    "category": "Officiel / TFM",
+    "description": "Analyse approfondie de la situation politique et sociale avec invités spéciaux."
+  }
+]

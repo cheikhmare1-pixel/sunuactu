@@ -1,0 +1,50 @@
+[
+  {
+    "id": "art-1",
+    "title": "Conseil des Ministres : Les nouvelles mesures économiques et sociales adoptées à Dakar",
+    "sourceId": "aps",
+    "sourceName": "APS",
+    "sourceLogo": "https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=200&q=80",
+    "sourceUrl": "https://aps.sn",
+    "url": "https://aps.sn/conseil-des-ministres-decisions-dakar",
+    "imageUrl": "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=800&q=80",
+    "date": "2026-08-08T01:30:00.000Z",
+    "category": "Politique",
+    "author": "Rédaction APS",
+    "summary": "Le chef de l'État a présidé le Conseil des ministres au Palais de la République. D'importants décrets portant sur le soutien à la production agricole locale et la création d'emplois pour la jeunesse ont été adoptés.",
+    "content": "Dakar — Le Président de la République a réuni le Conseil des ministres pour examiner la situation économique et sociale du pays. Au terme des délibérations, le Gouvernement a validé un plan d'investissement stratégique axé sur l'industrialisation des filières agricoles, la modernisation du port de Dakar et le renforcement du système de santé de proximité dans les régions de Matam, Ziguinchor et Tambacounda. Par ailleurs, des instructions fermes ont été données au ministre de l'Équipement pour accélérer les travaux d'assainissement avant le pic de la saison des pluies.",
+    "isFeatured": true
+  },
+  {
+    "id": "art-2",
+    "title": "Économie : Le Sénégal enregistre une croissance soutenue tirée par les secteurs gazier et technologique",
+    "sourceId": "seneweb",
+    "sourceName": "Seneweb",
+    "sourceLogo": "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=200&q=80",
+    "sourceUrl": "https://www.seneweb.com",
+    "url": "https://www.seneweb.com/news/Economie/croissance-senegal-rapport-2026",
+    "imageUrl": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
+    "date": "2026-08-08T00:45:00.000Z",
+    "category": "Économie",
+    "author": "Mamadou Ndiaye",
+    "summary": "Selon le dernier rapport de l'ANSD, l'économie sénégalaise affiche une dynamique positive soutenue par la mise en service des projets énergétiques majeurs et le dynamisme du numérique.",
+    "content": "Dakar — Les indicateurs conjoncturels publiés confirment l'accélération de l'activité économique nationale. Les exportations et la hausse de la valeur ajoutée industrielle propulsent les prévisions budgétaires vers le haut. Les analystes soulignent le rôle clé de la numérisation des services publics et l'expansion du hub technologique de Diamniadio.",
+    "isFeatured": true
+  },
+  {
+    "id": "art-3",
+    "title": "CAN 2027 : Les Lions du Sénégal entament leur stage de préparation avec une première séance à Thiès",
+    "sourceId": "wiwsport",
+    "sourceName": "wiwsport",
+    "sourceLogo": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=200&q=80",
+    "sourceUrl": "https://wiwsport.com",
+    "url": "https://wiwsport.com/lions-du-senegal-preparation-thies",
+    "imageUrl": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80",
+    "date": "2026-08-07T19:40:00.000Z",
+    "category": "Sport",
+    "author": "Ousmane Diallo",
+    "summary": "L'équipe nationale de football du Sénégal s'est regroupée au Stade Lat Dior de Thiès devant des milliers de supporters venus encourager les joueurs avant les éliminatoires.",
+    "content": "Thiès — L'ambiance était festive au stade Lat Dior de Thiès lors du premier galop d'entraînement de la sélection nationale. Le sélectionneur a pu compter sur un effectif au complet avec l'arrivée des cadres évoluant dans les plus grands championnats européens et arabes.",
+    "isFeatured": false
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "live-rts1",
+    "youtubeId": "5qap5aO4i9A",
+    "title": "🔴 DIRECT RTS 1 — Édition Spéciale & Journal Télévisé en direct de Dakar",
+    "channelId": "rts1",
+    "channelName": "RTS 1 - Télévision Publique Nationale",
+    "channelLogo": "https://www.google.com/s2/favicons?domain=rts.sn&sz=128",
+    "thumbnail": "https://i.ytimg.com/vi/5qap5aO4i9A/hqdefault.jpg",
+    "status": "LIVE",
+    "statusText": "En direct de la rédaction centrale",
+    "viewers": "18 420 téléspectateurs",
+    "date": "Aujourd'hui",
+    "category": "Télévision Publique",
+    "type": "direct"
+  },
+  {
+    "id": "live-tfm",
+    "youtubeId": "L_Lup_IJL6o",
+    "title": "🔴 DIRECT TFM — Édition Spéciale Info & Grand Débat en direct",
+    "channelId": "tfm",
+    "channelName": "TFM - Télé Futurs Médias",
+    "channelLogo": "https://www.google.com/s2/favicons?domain=tfm.sn&sz=128",
+    "thumbnail": "https://i.ytimg.com/vi/L_Lup_IJL6o/hqdefault.jpg",
+    "status": "LIVE",
+    "statusText": "En direct de la rédaction TFM",
+    "viewers": "34 890 téléspectateurs",
+    "date": "Aujourd'hui",
+    "category": "Télévision Privée",
+    "type": "direct"
+  }
+]
