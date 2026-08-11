@@ -39,41 +39,89 @@ export default function VideosPage() {
 
   useEffect(() => {
     fetchVideos();
+
+    // Auto-refresh YouTube videos every 1 hour
+    const interval = setInterval(() => {
+      fetchVideos();
+    }, 60 * 60 * 1000);
+
+    return () => clearInterval(interval);
   }, [selectedChannel]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setCategoryTab('all');
     fetchVideos(searchQuery);
   };
 
   const quickSearch = (term: string) => {
     setSearchQuery(term);
+    setCategoryTab('all');
     fetchVideos(term);
   };
 
   const filteredVideos = videos.filter((vid) => {
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const matchSearch =
+        vid.title.toLowerCase().includes(q) ||
+        vid.channelName.toLowerCase().includes(q) ||
+        (vid.description && vid.description.toLowerCase().includes(q)) ||
+        vid.category.toLowerCase().includes(q);
+      if (!matchSearch) return false;
+    }
+
+    if (categoryTab === 'all') return true;
+
+    const searchStr = `${vid.channelName} ${vid.category} ${vid.title} ${vid.channelId}`.toLowerCase();
+
     if (categoryTab === 'tv') {
       return (
-        vid.category.includes('Officiel') ||
-        vid.category.includes('RTS') ||
-        vid.category.includes('TFM') ||
-        vid.category.includes('2sTV') ||
-        ['rts1', 'rts2', 'tfm', '2stv', 'walf_tv', 'sentv', 'itv', '7tv', 'dtv', 'leraltv', 'rewmitv', 'rdv'].includes(vid.channelId)
+        searchStr.includes('rts') ||
+        searchStr.includes('tfm') ||
+        searchStr.includes('2stv') ||
+        searchStr.includes('walf') ||
+        searchStr.includes('sentv') ||
+        searchStr.includes('itv') ||
+        searchStr.includes('7tv') ||
+        searchStr.includes('dtv') ||
+        searchStr.includes('rewmi') ||
+        searchStr.includes('rdv') ||
+        searchStr.includes('leral') ||
+        searchStr.includes('tv') ||
+        searchStr.includes('officiel') ||
+        searchStr.includes('télévision')
       );
     }
+
     if (categoryTab === 'info_web') {
       return (
-        vid.category.includes('Indépendante') ||
-        ['senegal7_tv', 'leral_tv', 'kewoulo_tv', 'sanslimites_tv', 'seneweb_tv', 'dakaractu_tv'].includes(vid.channelId)
+        searchStr.includes('seneweb') ||
+        searchStr.includes('dakaractu') ||
+        searchStr.includes('senegal7') ||
+        searchStr.includes('kewoulo') ||
+        searchStr.includes('sanslimites') ||
+        searchStr.includes('info') ||
+        searchStr.includes('news') ||
+        searchStr.includes('presse') ||
+        searchStr.includes('journal') ||
+        searchStr.includes('actualité') ||
+        searchStr.includes('indépendante')
       );
     }
+
     if (categoryTab === 'production') {
       return (
-        vid.category.includes('Production') ||
-        vid.category.includes('Buzz') ||
-        ['marodi', 'pikini', 'dakarbuzz'].includes(vid.channelId)
+        searchStr.includes('marodi') ||
+        searchStr.includes('pikini') ||
+        searchStr.includes('dakarbuzz') ||
+        searchStr.includes('série') ||
+        searchStr.includes('film') ||
+        searchStr.includes('production') ||
+        searchStr.includes('buzz')
       );
     }
+
     return true;
   });
 
@@ -96,7 +144,7 @@ export default function VideosPage() {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Vidéos des 26 télévisions officielles (RTS, TFM, 2sTV, Walf, iTV, 7TV, SenTV) et des médias numériques de production (Marodi, Pikini).
+            Vidéos des télévisions et médias numériques (Mise à jour automatique toutes les heures).
           </p>
         </div>
 
@@ -105,7 +153,7 @@ export default function VideosPage() {
           className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-xs hover:bg-emerald-600 transition-colors flex items-center space-x-2 shrink-0 self-start md:self-auto"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          <span>Actualiser le flux (48h)</span>
+          <span>Actualiser le flux (1h)</span>
         </button>
       </div>
 
@@ -133,7 +181,7 @@ export default function VideosPage() {
             }`}
           >
             <Tv className="w-3.5 h-3.5 text-amber-400" />
-            <span>📺 Télévisions Conformes (26 Chaînes)</span>
+            <span>📺 Télévisions Conformes</span>
           </button>
 
           <button
@@ -157,7 +205,7 @@ export default function VideosPage() {
             }`}
           >
             <Film className="w-3.5 h-3.5 text-blue-400" />
-            <span>🎬 Production Numérique (Marodi, Pikini)</span>
+            <span>🎬 Production Numérique</span>
           </button>
         </div>
 
