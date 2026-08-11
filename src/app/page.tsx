@@ -54,19 +54,51 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
+  // 1. Breaking News: Mis à jour immédiatement dès qu'un article est repris par plusieurs sources (relatedSources > 1)
+  const breakingNewsArticle = React.useMemo(() => {
+    if (articles.length === 0) return null;
+
+    const multiSourceArticles = articles.filter(
+      (a) => a.relatedSources && a.relatedSources.length > 1
+    );
+
+    if (multiSourceArticles.length > 0) {
+      const sorted = [...multiSourceArticles].sort((a, b) => {
+        const countA = a.relatedSources?.length || 0;
+        const countB = b.relatedSources?.length || 0;
+        if (countB !== countA) return countB - countA;
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
+      return sorted[0];
+    }
+
+    return articles.find((a) => a.isFeatured) || articles[0] || null;
+  }, [articles]);
+
+  // 5. 3 sites les plus actifs de la journée
+  const top3ActiveSources = React.useMemo(() => {
+    return [...sources]
+      .filter((s) => s.active)
+      .sort((a, b) => (a.priority || 99) - (b.priority || 99))
+      .slice(0, 3);
+  }, [sources]);
+
   const filteredArticles = selectedCategory === 'Toutes'
     ? articles
     : articles.filter(a => a.category.toLowerCase() === selectedCategory.toLowerCase());
 
   return (
     <div className="space-y-12 pb-12">
+      {/* Top Banner Ad */}
       <AdBanner type="header" />
 
+      {/* Hero Section: Breaking News multi-sources immédiat */}
       <HeroSection
-        featuredArticle={articles.find((a) => a.isFeatured) || articles[0] || null}
+        featuredArticle={breakingNewsArticle}
         onReadArticle={(item) => setSelectedArticle(item)}
       />
 
+      {/* Category Pills */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Filtrer par Thématique</h2>
@@ -84,6 +116,7 @@ export default function HomePage() {
         />
       </div>
 
+      {/* SECTION 1: 3 Nouveaux Articles */}
       <section className="space-y-6">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center space-x-3">
@@ -91,8 +124,8 @@ export default function HomePage() {
               <Newspaper className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Actualités Récentes</h2>
-              <p className="text-xs text-slate-500">Les derniers articles agrégés de la presse sénégalaise (MàJ chaque heure)</p>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Actualités Récentes (3 Derniers Articles)</h2>
+              <p className="text-xs text-slate-500">Les 3 derniers articles agrégés en continu</p>
             </div>
           </div>
           <Link
@@ -111,15 +144,17 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredArticles.slice(0, 6).map((art) => (
+            {filteredArticles.slice(0, 3).map((art) => (
               <ArticleCard key={art.id} article={art} onReadArticle={(item) => setSelectedArticle(item)} />
             ))}
           </div>
         )}
       </section>
 
+      {/* In-feed Ad Banner */}
       <AdBanner type="in-feed" />
 
+      {/* SECTION 2: 3 Nouveaux Directs 🔴 */}
       <section className="space-y-6">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center space-x-3">
@@ -128,10 +163,10 @@ export default function HomePage() {
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Chaînes en Direct</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Chaînes en Direct (3 Nouveaux Directs)</h2>
                 <span className="px-2 py-0.5 rounded-full bg-red-600 text-white font-extrabold text-[10px] animate-pulse">LIVE</span>
               </div>
-              <p className="text-xs text-slate-500">Les diffusions en direct des télévisions et radios sénégalaises (MàJ chaque heure)</p>
+              <p className="text-xs text-slate-500">Les 3 diffusions en direct vidéo TV & Radio les plus récentes</p>
             </div>
           </div>
           <Link
@@ -150,6 +185,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SECTION 3: 3 Nouvelles Vidéos */}
       <section className="space-y-6">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center space-x-3">
@@ -157,8 +193,8 @@ export default function HomePage() {
               <Video className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Dernières Vidéos</h2>
-              <p className="text-xs text-slate-500">Sélection des vidéos d'information et grands reportages (MàJ chaque heure)</p>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Dernières Vidéos (3 Nouvelles Vidéos)</h2>
+              <p className="text-xs text-slate-500">Les 3 dernières vidéos publiées sur les chaînes sénégalaises</p>
             </div>
           </div>
           <Link
@@ -177,6 +213,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SECTION 4: 3 Sites les plus actifs de la journée */}
       <section className="space-y-6">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center space-x-3">
@@ -184,8 +221,8 @@ export default function HomePage() {
               <Globe className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Sites d'Information du Sénégal</h2>
-              <p className="text-xs text-slate-500">Répertoire des principaux journaux et portails d'information (MàJ chaque heure)</p>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Sites d'Information (3 Médias les plus actifs de la journée)</h2>
+              <p className="text-xs text-slate-500">Les 3 journaux et portails de presse les plus actifs aujourd'hui</p>
             </div>
           </div>
           <Link
@@ -197,13 +234,14 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {sources.slice(0, 4).map((src) => (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {top3ActiveSources.map((src) => (
             <SourceCard key={src.id} source={src} />
           ))}
         </div>
       </section>
 
+      {/* Internal Reader Modal */}
       {selectedArticle && (
         <ArticleModal article={selectedArticle} onClose={() => setSelectedArticle(null)} />
       )}
