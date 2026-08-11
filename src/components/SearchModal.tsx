@@ -37,7 +37,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         }
       } catch (err) {
         console.error(err);
-      } font-medium {
+      } finally {
         setLoading(false);
       }
     }, 300);
