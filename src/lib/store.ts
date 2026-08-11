@@ -114,7 +114,7 @@ class DataStore {
 
   private cachedGroupedArticles: Article[] | null = null;
   private lastDeduplicationTime = 0;
-  private readonly CACHE_TTL_MS = 60000;
+  private readonly CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour TTL (3600000 ms)
 
   private stats: SystemStats = {
     youtubeRequests: 42,

@@ -3,7 +3,7 @@ import globalStore, { Video, LiveItem } from './store';
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY || 'AIzaSyCkgz8j_7mEiBLLTJANPE0wUgPJfrzKtgY';
 
 const cache = new Map<string, { timestamp: number; data: any }>();
-const CACHE_TTL = 15 * 60 * 1000;
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour (60 minutes)
 
 export function getYoutubeThumbnail(videoId: string, snippetThumbnails?: any): string {
   if (snippetThumbnails) {

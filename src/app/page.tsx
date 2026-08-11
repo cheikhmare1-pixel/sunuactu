@@ -45,6 +45,13 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchData();
+
+    // Auto-refresh 4 tabs content every 1 hour (3,600,000 ms)
+    const interval = setInterval(() => {
+      fetchData();
+    }, 60 * 60 * 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const filteredArticles = selectedCategory === 'Toutes'
@@ -85,7 +92,7 @@ export default function HomePage() {
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Actualités Récentes</h2>
-              <p className="text-xs text-slate-500">Les derniers articles agrégés de la presse sénégalaise</p>
+              <p className="text-xs text-slate-500">Les derniers articles agrégés de la presse sénégalaise (MàJ chaque heure)</p>
             </div>
           </div>
           <Link
@@ -124,7 +131,7 @@ export default function HomePage() {
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Chaînes en Direct</h2>
                 <span className="px-2 py-0.5 rounded-full bg-red-600 text-white font-extrabold text-[10px] animate-pulse">LIVE</span>
               </div>
-              <p className="text-xs text-slate-500">Les diffusions en direct des télévisions et radios sénégalaises</p>
+              <p className="text-xs text-slate-500">Les diffusions en direct des télévisions et radios sénégalaises (MàJ chaque heure)</p>
             </div>
           </div>
           <Link
@@ -151,7 +158,7 @@ export default function HomePage() {
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Dernières Vidéos</h2>
-              <p className="text-xs text-slate-500">Sélection des vidéos d'information et grands reportages</p>
+              <p className="text-xs text-slate-500">Sélection des vidéos d'information et grands reportages (MàJ chaque heure)</p>
             </div>
           </div>
           <Link
@@ -178,7 +185,7 @@ export default function HomePage() {
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Sites d'Information du Sénégal</h2>
-              <p className="text-xs text-slate-500">Répertoire des principaux journaux et portails d'information</p>
+              <p className="text-xs text-slate-500">Répertoire des principaux journaux et portails d'information (MàJ chaque heure)</p>
             </div>
           </div>
           <Link

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import globalStore from '@/lib/store';
 import { syncAllActiveRssFeeds } from '@/lib/rss';
 
+export const revalidate = 3600; // Auto-revalidate every 1 hour (3600 seconds)
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category') || undefined;
@@ -22,7 +24,7 @@ export async function GET(request: Request) {
     },
     {
       headers: {
-        'Cache-Control': 'public, max-age=15, stale-while-revalidate=45'
+        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=600'
       }
     }
   );
