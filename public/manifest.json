@@ -1,0 +1,10 @@
+{
+  "name": "SunuActu",
+  "short_name": "SunuActu",
+  "description": "Agrégateur d'actualités et médias du Sénégal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#059669",
+  "icons": []
+}
