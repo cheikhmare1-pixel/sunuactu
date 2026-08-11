@@ -26,7 +26,7 @@ export default function HomePage() {
     setLoading(true);
     try {
       const [artRes, vidRes, liveRes, srcRes] = await Promise.all([
-        fetch('/api/articles').then((r) => r.json()),
+        fetch('/api/articles?sync=true').then((r) => r.json()),
         fetch('/api/videos').then((r) => r.json()),
         fetch('/api/lives').then((r) => r.json()),
         fetch('/api/sources?active=true').then((r) => r.json()),

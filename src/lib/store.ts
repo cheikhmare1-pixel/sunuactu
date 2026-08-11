@@ -162,7 +162,9 @@ class DataStore {
       return this.cachedGroupedArticles;
     }
 
-    let list = [...this.articles];
+    let list = [...this.articles].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
 
     if (category && category !== 'Tous') {
       list = list.filter((a) => a.category.toLowerCase() === category.toLowerCase());
@@ -246,7 +248,9 @@ class DataStore {
     const existingUrls = new Set(this.articles.map((a) => a.url));
     const toAdd = newArticles.filter((a) => !existingUrls.has(a.url));
     if (toAdd.length > 0) {
-      this.articles = [...toAdd, ...this.articles];
+      this.articles = [...toAdd, ...this.articles].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
       this.cachedGroupedArticles = null;
     }
   }
