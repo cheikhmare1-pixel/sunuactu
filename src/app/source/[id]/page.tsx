@@ -169,23 +169,16 @@ export default function SourceDetailPage() {
             <img src={readingArticle.imageUrl} alt={readingArticle.title} className="w-full h-full object-cover" />
           </div>
 
+          {/* Integral Clean Content (Sans balises HTML ni résumé en double) */}
           <div className="prose dark:prose-invert max-w-none text-slate-800 dark:text-slate-200 text-base sm:text-lg leading-relaxed space-y-4 pt-2">
-            <p className="font-bold text-slate-900 dark:text-white text-lg sm:text-xl leading-snug bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border-l-4 border-emerald-500">
-              {readingArticle.summary}
-            </p>
-            
-            {readingArticle.content && readingArticle.content !== readingArticle.summary ? (
-              <div className="space-y-4">
-                <p>{readingArticle.content}</p>
-                <p>
-                  L'information est suivie de près par la rédaction de {source.name}. Retrouvez l'intégralité des développements et des réactions officielles sur le fil d'actualité en continu.
-                </p>
-              </div>
-            ) : (
-              <p>
-                Retrouvez l'ensemble des détails de cette actualité dans le bulletin d'information publié par la rédaction de {source.name}.
-              </p>
-            )}
+            {((readingArticle.content || readingArticle.summary || '')
+              .replace(/<[^>]*>?/gm, '')
+              .replace(/&nbsp;/g, ' ')
+              .trim())
+              .split('\n\n')
+              .map((paragraph, idx) => (
+                <p key={idx}>{paragraph}</p>
+              ))}
           </div>
 
           <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
