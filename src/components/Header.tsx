@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Sun, Moon, Radio, Newspaper, Globe, Video, Menu, X, ShieldAlert, Sparkles, Bookmark, Flame } from 'lucide-react';
+import { Search, Sun, Moon, Radio, Newspaper, Globe, Video, Menu, X, ShieldAlert, Sparkles, Bookmark, Flame, Mail } from 'lucide-react';
 import SearchModal from './SearchModal';
 
 export default function Header() {
@@ -28,12 +28,14 @@ export default function Header() {
     { label: 'Vidéos', href: '/videos', icon: Video },
     { label: 'Directs', href: '/directs', icon: Radio, isLive: true },
     { label: 'Favoris', href: '/favoris', icon: Bookmark },
+    { label: 'Contact', href: '/contact', icon: Mail },
   ];
 
   return (
     <>
       <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md transition-colors">
         
+        {/* Dynamic Breaking News Alert Bar */}
         <div className="bg-gradient-to-r from-red-700 via-amber-600 to-emerald-700 text-white px-4 py-1 text-[11px] font-extrabold flex items-center justify-between shadow-sm">
           <div className="flex items-center space-x-2 truncate">
             <span className="px-2 py-0.5 rounded bg-white text-red-700 uppercase font-black tracking-wider text-[9px] animate-pulse">
@@ -52,6 +54,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             
+            {/* Logo + Title */}
             <div className="flex items-center space-x-3">
               <Link href="/" className="flex items-center space-x-2 group">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 via-amber-500 to-red-600 flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-105 transition-transform">
@@ -68,6 +71,7 @@ export default function Header() {
               </Link>
             </div>
 
+            {/* Desktop Navigation Tabs */}
             <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
               {navTabs.map((tab) => {
                 const Icon = tab.icon;
@@ -93,6 +97,7 @@ export default function Header() {
               })}
             </nav>
 
+            {/* Right Tools (Search, Dark mode, Admin) */}
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setSearchOpen(true)}
@@ -118,6 +123,7 @@ export default function Header() {
                 <span>Admin</span>
               </Link>
 
+              {/* Mobile Hamburger Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -129,6 +135,7 @@ export default function Header() {
           </div>
         </div>
 
+        {/* Mobile Navigation Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-2 pb-4 space-y-2">
             {navTabs.map((tab) => {
@@ -155,6 +162,7 @@ export default function Header() {
         )}
       </header>
 
+      {/* Global Search Modal */}
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );

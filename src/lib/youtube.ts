@@ -26,6 +26,7 @@ export async function searchYouTubeVideos(query: string, category?: string): Pro
 
   globalStore.recordCacheMiss();
 
+  // Perform quick local Store search first so user gets instant results
   const storeMatches = globalStore.getVideos(category, undefined, q).map(v => ({
     ...v,
     thumbnail: getYoutubeThumbnail(v.youtubeId)
@@ -42,7 +43,7 @@ export async function searchYouTubeVideos(query: string, category?: string): Pro
     searchUrl.searchParams.append('order', 'relevance');
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 sec timeout for API call
 
     const res = await fetch(searchUrl.toString(), { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -68,6 +69,7 @@ export async function searchYouTubeVideos(query: string, category?: string): Pro
       });
 
       if (apiVideos.length > 0) {
+        // Merge API results with local store results without duplicates
         const combined = [...apiVideos];
         for (const storeV of storeMatches) {
           if (!combined.some(v => v.youtubeId === storeV.youtubeId)) {
@@ -82,6 +84,7 @@ export async function searchYouTubeVideos(query: string, category?: string): Pro
     globalStore.logError(`Erreur API YouTube: ${err.message}`);
   }
 
+  // Instant Fallback if API timeout or no network
   return storeMatches;
 }
 
@@ -107,11 +110,11 @@ export async function fetchLiveStreams(): Promise<LiveItem[]> {
     searchUrl.searchParams.append('part', 'snippet');
     searchUrl.searchParams.append('eventType', 'live');
     searchUrl.searchParams.append('type', 'video');
-    searchUrl.searchParams.append('q', 'Sénégal direct TV');
+    searchUrl.searchParams.append('q', 'RTS TFM Walf 2sTV Senegal direct');
     searchUrl.searchParams.append('maxResults', '10');
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
 
     const res = await fetch(searchUrl.toString(), { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -120,6 +123,10 @@ export async function fetchLiveStreams(): Promise<LiveItem[]> {
       const data = await res.json();
       const apiLives: LiveItem[] = (data.items || []).map((item: any) => {
         const videoId = item.id?.videoId || item.id;
+        const title = item.snippet.title || '';
+        const chTitle = item.snippet.channelTitle || '';
+        const isSenegal = /senegal|rts|tfm|walf|2stv|sentv|itv|7tv|dtv|dakar/i.test(title + ' ' + chTitle);
+
         return {
           id: videoId,
           youtubeId: videoId,
@@ -128,17 +135,26 @@ export async function fetchLiveStreams(): Promise<LiveItem[]> {
           channelName: item.snippet.channelTitle,
           channelLogo: `https://www.google.com/s2/favicons?domain=youtube.com&sz=128`,
           thumbnail: getYoutubeThumbnail(videoId, item.snippet.thumbnails),
-          status: 'LIVE',
+          status: 'LIVE' as const,
           statusText: 'En Direct Maintenant',
           viewers: 'En direct',
           date: 'Maintenant',
-          category: 'Information',
-          type: 'direct'
+          category: 'Télévision Info',
+          type: 'direct' as const,
+          isSenegalNews: isSenegal
         };
       });
 
       if (apiLives.length > 0) {
-        const combined = [...apiLives, ...defaultLives];
+        // Merge API lives with defaultLives without duplicate IDs
+        const existingIds = new Set(apiLives.map(l => l.youtubeId));
+        const filteredDefault = defaultLives.filter(l => !existingIds.has(l.youtubeId));
+        const combined = [...apiLives, ...filteredDefault].sort((a, b) => {
+          const aSen = a.isSenegalNews ? 1 : 0;
+          const bSen = b.isSenegalNews ? 1 : 0;
+          return bSen - aSen;
+        });
+
         cache.set(cacheKey, { timestamp: Date.now(), data: combined });
         return combined;
       }

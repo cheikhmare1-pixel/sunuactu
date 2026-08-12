@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Users, Play, X, ExternalLink, Loader2 } from 'lucide-react';
+import { Radio, Users, Play, X, ExternalLink, Loader2, Tv, AlertCircle } from 'lucide-react';
 import { LiveItem } from '@/lib/store';
 
 interface LiveCardProps {
@@ -13,6 +13,7 @@ export default function LiveCard({ live }: LiveCardProps) {
   const [iframeLoading, setIframeLoading] = useState(true);
 
   const isLiveNow = live.type === 'direct' || live.status === 'LIVE';
+  const directLink = live.directUrl || (live.channelHandle ? `https://www.youtube.com/${live.channelHandle}/live` : `https://www.youtube.com/watch?v=${live.youtubeId}`);
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const img = e.currentTarget;
@@ -37,6 +38,7 @@ export default function LiveCard({ live }: LiveCardProps) {
         isLiveNow ? 'border-red-500/50 dark:border-red-500/40 ring-1 ring-red-500/20' : 'border-slate-200 dark:border-slate-700/70'
       }`}>
         
+        {/* Thumbnail & Live Status Badge */}
         <div
           onClick={() => {
             setIsPlaying(true);
@@ -59,11 +61,22 @@ export default function LiveCard({ live }: LiveCardProps) {
             </div>
           </div>
 
-          <div className="absolute top-3 left-3 flex items-center space-x-1.5">
+          {/* Top Badges */}
+          <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+            {live.isSenegalNews && (
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-600/90 backdrop-blur-md text-white font-black text-[10px] uppercase tracking-wide shadow-md flex items-center space-x-1">
+                <span>🇸🇳 SÉNÉGAL INFO</span>
+              </span>
+            )}
+
             {isLiveNow ? (
               <span className="px-3 py-1 rounded-full bg-red-600 text-white font-extrabold text-[11px] uppercase tracking-wider flex items-center space-x-1 shadow-lg live-badge-pulse">
                 <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
                 <span>🔴 EN DIRECT</span>
+              </span>
+            ) : live.type === 'recent' ? (
+              <span className="px-2.5 py-1 rounded-full bg-slate-900/90 text-amber-300 font-bold text-[10px] uppercase">
+                DERNIER DIRECT
               </span>
             ) : (
               <span className="px-2.5 py-1 rounded-full bg-slate-900/90 text-blue-300 font-bold text-[10px] uppercase">
@@ -72,6 +85,7 @@ export default function LiveCard({ live }: LiveCardProps) {
             )}
           </div>
 
+          {/* Viewers Badge */}
           {live.viewers && (
             <div className="absolute bottom-2 right-2 px-2.5 py-0.5 rounded bg-slate-950/80 backdrop-blur-md text-white text-[10px] font-bold flex items-center space-x-1">
               <Users className="w-3 h-3 text-red-400" />
@@ -80,6 +94,7 @@ export default function LiveCard({ live }: LiveCardProps) {
           )}
         </div>
 
+        {/* Info */}
         <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
@@ -118,13 +133,16 @@ export default function LiveCard({ live }: LiveCardProps) {
 
       </div>
 
+      {/* Embedded Live Player Modal */}
       {isPlaying && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/90 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-4xl bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-800 flex flex-col">
-            <div className="flex items-center justify-between p-4 bg-slate-950 border-b border-slate-800">
+          <div className="relative w-full max-w-4xl bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-800 flex flex-col max-h-[90vh]">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 bg-slate-950 border-b border-slate-800 shrink-0">
               <div className="flex items-center space-x-2 truncate">
                 <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping shrink-0"></span>
-                <span className="text-xs font-bold text-white truncate max-w-md">{live.title}</span>
+                <span className="text-xs sm:text-sm font-bold text-white truncate max-w-md">{live.title}</span>
               </div>
               <button
                 onClick={() => setIsPlaying(false)}
@@ -134,11 +152,12 @@ export default function LiveCard({ live }: LiveCardProps) {
               </button>
             </div>
 
-            <div className="relative w-full pb-[56.25%] bg-black">
+            {/* Video Player Container */}
+            <div className="relative w-full pb-[56.25%] bg-black shrink-0">
               {iframeLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-950 text-white space-x-2">
-                  <Loader2 className="w-6 h-6 animate-spin text-red-500" />
-                  <span className="text-xs font-bold">Connexion au flux Direct HD...</span>
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 text-white space-y-3 p-4 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin text-red-500" />
+                  <span className="text-sm font-bold">Chargement du flux en direct HD...</span>
                 </div>
               )}
 
@@ -153,19 +172,28 @@ export default function LiveCard({ live }: LiveCardProps) {
               ></iframe>
             </div>
 
-            <div className="p-4 bg-slate-950 border-t border-slate-800 text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2">
-              <div>
-                <span>Diffusion par : <strong className="text-white">{live.channelName}</strong></span>
+            {/* Direct Channel External Link Footer / Backup Controls */}
+            <div className="p-4 bg-slate-950 border-t border-slate-800 text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-3 overflow-y-auto">
+              <div className="flex items-center space-x-3">
+                <img src={live.channelLogo} alt={live.channelName} className="w-8 h-8 rounded-full object-cover border border-slate-700" />
+                <div>
+                  <div className="text-white font-extrabold text-xs">{live.channelName}</div>
+                  <div className="text-[10px] text-slate-400">Diffusion officielle {live.isSenegalNews ? 'Sénégal TV' : 'Live'}</div>
+                </div>
               </div>
-              <a
-                href={`https://www.youtube.com/watch?v=${live.youtubeId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 rounded-lg bg-red-600/20 text-red-400 font-bold hover:bg-red-600 hover:text-white transition-colors flex items-center space-x-1.5"
-              >
-                <span>Voir le Direct sur l'App YouTube</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+
+              <div className="flex items-center space-x-2">
+                <a
+                  href={directLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs transition-colors flex items-center space-x-2 shadow-lg shadow-red-600/30"
+                >
+                  <Tv className="w-4 h-4" />
+                  <span>Ouvrir le Direct HD sur YouTube</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
             </div>
 
           </div>

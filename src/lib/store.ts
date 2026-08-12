@@ -93,6 +93,9 @@ export interface LiveItem {
   date: string;
   category: string;
   type: 'direct' | 'recent' | 'rediffusion';
+  isSenegalNews?: boolean;
+  channelHandle?: string;
+  directUrl?: string;
 }
 
 export interface SystemStats {
@@ -112,6 +115,7 @@ class DataStore {
   private videos: Video[] = mockVideosData as Video[];
   private lives: LiveItem[] = mockLivesData as LiveItem[];
 
+  // High-performance deduplication cache
   private cachedGroupedArticles: Article[] | null = null;
   private lastDeduplicationTime = 0;
   private readonly CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour TTL (3600000 ms)
@@ -126,6 +130,7 @@ class DataStore {
     errorsLog: []
   };
 
+  // Sources
   getSources(activeOnly = false): Source[] {
     return activeOnly ? this.sources.filter((s) => s.active) : this.sources;
   }
@@ -138,10 +143,11 @@ class DataStore {
     const id = source.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
     const newSource: Source = { ...source, id };
     this.sources.unshift(newSource);
-    this.cachedGroupedArticles = null;
+    this.cachedGroupedArticles = null; // invalidate cache
     return newSource;
   }
 
+  // Channels
   getChannels(activeOnly = false): Channel[] {
     return activeOnly ? this.channels.filter((c) => c.active) : this.channels;
   }
@@ -153,18 +159,18 @@ class DataStore {
     return newChan;
   }
 
+  // Ultra-Fast Smart Article Deduplication & Multi-source Grouping Engine
   getArticles(category?: string, sourceId?: string, query?: string, deduplicate = true): Article[] {
     const isDefaultFetch = (!category || category === 'Tous') && !sourceId && !query && deduplicate;
     const now = Date.now();
 
+    // Fast Cache Return
     if (isDefaultFetch && this.cachedGroupedArticles && (now - this.lastDeduplicationTime < this.CACHE_TTL_MS)) {
       this.recordCacheHit();
       return this.cachedGroupedArticles;
     }
 
-    let list = [...this.articles].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    let list = [...this.articles];
 
     if (category && category !== 'Tous') {
       list = list.filter((a) => a.category.toLowerCase() === category.toLowerCase());
@@ -186,6 +192,7 @@ class DataStore {
 
     if (!deduplicate) return list;
 
+    // Smart Clustering Algorithm for "Voir X sources"
     const grouped: Article[] = [];
     const usedIds = new Set<string>();
 
@@ -251,10 +258,12 @@ class DataStore {
       this.articles = [...toAdd, ...this.articles].sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       );
-      this.cachedGroupedArticles = null;
+      this.cachedGroupedArticles = null; // Invalidate cache
     }
   }
 
+
+  // Videos
   getVideos(category?: string, channelId?: string, query?: string): Video[] {
     let list = [...this.videos];
     if (category && category !== 'Tous') {
@@ -275,11 +284,21 @@ class DataStore {
     return list;
   }
 
+  // Lives
   getLives(type?: 'direct' | 'recent' | 'rediffusion'): LiveItem[] {
-    if (!type) return this.lives;
-    return this.lives.filter((l) => l.type === type);
+    let list = this.lives;
+    if (type) {
+      list = list.filter((l) => l.type === type);
+    }
+    // Prioritize Senegal news channels first
+    return [...list].sort((a, b) => {
+      const aSen = a.isSenegalNews ? 1 : 0;
+      const bSen = b.isSenegalNews ? 1 : 0;
+      return bSen - aSen;
+    });
   }
 
+  // Quota & Stats Logging
   recordYoutubeRequest(quotaUnits = 100) {
     this.stats.youtubeRequests += 1;
     this.stats.quotaEstimated += quotaUnits;
